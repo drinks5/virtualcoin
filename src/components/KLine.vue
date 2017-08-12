@@ -1,7 +1,5 @@
 <template>
-  <div class="kline">
-    <h1>{{ msg }}</h1>
-    <div id='kline'></div>
+  <div class="kline" id="kline">
   </div>
 </template>
 
@@ -141,6 +139,9 @@ var option = {
         }
     ]
 };
+
+var timestamp = "";
+
 export default {
   name: 'kline',
   data () {
@@ -148,7 +149,7 @@ export default {
       dates: [],
       data: [],
       msg: 'Welcome to K Line',
-      ws: new WebSocket('ws://' + '127.0.0.1'+ ':' + '8000'+ '/feed')
+      ws: new WebSocket('ws://' + "127.0.0.1:8000/feed")
     }
   },
   mounted() {
@@ -169,7 +170,8 @@ export default {
         that.dataset = data.dataset;
         that.dates = data.dates;
         };
-      this.ws.send("data");
+      timestamp = this.dates[this.dates.length - 1] || ""
+      this.ws.send(timestamp)
       option.xAxis.data = that.dates;
       option.series[0].data = that.dataset;
       option.series[1].data = this.calculateMA(5, that.dataset);
