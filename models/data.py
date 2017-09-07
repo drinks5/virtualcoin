@@ -50,7 +50,6 @@ class BtcTrade(object):
     def forever(self):
         while True:
             self.bulk(60)
-            [m() for m in self.hooks]
             sleep(30)
 
 

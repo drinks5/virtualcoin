@@ -14,10 +14,10 @@ def makedata():
                 '$gt': today
             }
         }).sort('timestamp', 1))
+    maxTime, minTime, interval = df['timestamp'].max(), df[
+        'timestamp'].min(), 1 * 60
     df = df.groupby(
-        pd.cut(df["timestamp"],
-               np.arange(df['timestamp'].min(), df['timestamp'].max(), 1 *
-                         60))).sum()
+        pd.cut(df["timestamp"], np.arange(minTime, maxTime, interval))).sum()
     df['date'] = df['timestamp'].map(datetime.fromtimestamp)
     df = df.set_index(['date'])
     return df
@@ -47,6 +47,7 @@ def inotify(func):
             print('macd 突破0轴 ' + info)
             print(last.to_string())
         return df
+
     return inner
 
 
@@ -74,5 +75,5 @@ def draw(func):
 
 
 if __name__ == '__main__':
-    df = inotify(macd)(makedata)()
+    df = inotify(macd(makedata))()
     print(df['macd'])
